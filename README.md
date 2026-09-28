@@ -16,7 +16,7 @@ git commit -m "Initial commit"
 Buat repo baru di GitHub (boleh **private** kalau tidak ingin dibagikan ke publik — Composer tetap bisa akses selama kamu login/auth), lalu:
 
 ```bash
-git remote add origin https://github.com/USERNAME/ci4-base.git
+git remote add origin https://github.com/medigital-dev/ci4-base.git
 git branch -M main
 git push -u origin main
 ```
@@ -27,10 +27,10 @@ Di `composer.json` project CI4-mu, tambahkan:
 
 ```json
 "repositories": [
-    { "type": "vcs", "url": "https://github.com/USERNAME/ci4-base.git" }
+    { "type": "vcs", "url": "https://github.com/medigital-dev/ci4-base.git" }
 ],
 "require": {
-    "said/ci4-base": "dev-main"
+    "medigital-dev/ci4-base": "dev-main"
 }
 ```
 
@@ -57,7 +57,7 @@ Buat token di GitHub: **Settings → Developer settings → Personal access toke
 Kalau pakai `dev-main` (selalu ikuti commit terbaru di branch main):
 
 ```bash
-composer update said/ci4-base
+composer update medigital-dev/ci4-base
 ```
 
 **Rekomendasi setelah stabil:** begitu kodenya sudah teruji dan tidak sering berubah drastis, mulai buat tag versi supaya project production tidak ikut ter-update otomatis tiap kamu commit:
@@ -71,7 +71,7 @@ Lalu di project yang mau "dikunci" ke versi stabil, ganti constraint:
 
 ```json
 "require": {
-    "said/ci4-base": "^1.0"
+    "medigital-dev/ci4-base": "^1.0"
 }
 ```
 
@@ -128,7 +128,7 @@ $files = new Files();
 $filename = $files->store($this->request->getFile('piagam'), WRITEPATH . 'uploads/piagam');
 ```
 
-Setelah nambah file baru, tidak perlu ubah `composer.json` apa pun — cukup commit + push, lalu `composer update said/ci4-base` di project yang mau pakai.
+Setelah nambah file baru, tidak perlu ubah `composer.json` apa pun — cukup commit + push, lalu `composer update medigital-dev/ci4-base` di project yang mau pakai.
 
 ## Lisensi
 

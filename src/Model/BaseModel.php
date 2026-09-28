@@ -1,6 +1,6 @@
 <?php
 
-namespace Said\Ci4Base\Model;
+namespace MedigitalDev\Ci4Base\Model;
 
 use CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\Model;

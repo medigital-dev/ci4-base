@@ -1,8 +1,9 @@
 # Dokumentasi Pemakaian — BaseModel
 
-Dokumentasi lengkap tiap method di `Said\Ci4Base\Model\BaseModel`.
+Dokumentasi lengkap tiap method di `MedigitalDev\Ci4Base\Model\BaseModel`.
 
 ## Daftar isi
+
 - [Setup](#setup)
 - [Migrasi tabel](#migrasi-tabel)
 - [generateUuid()](#generateuuid)
@@ -27,7 +28,7 @@ Extend `BaseModel` seperti extend `CodeIgniter\Model` biasa:
 
 namespace App\Models;
 
-use Said\Ci4Base\Model\BaseModel;
+use MedigitalDev\Ci4Base\Model\BaseModel;
 
 class StudentModel extends BaseModel
 {
@@ -84,6 +85,7 @@ public function saveData(array $data, ?string $id = null): string
 ```
 
 **Insert baru** (parameter `$id` dikosongkan / `null`):
+
 ```php
 $id = $model->saveData([
     'nama' => 'Budi',
@@ -93,6 +95,7 @@ $id = $model->saveData([
 ```
 
 **Update baris existing** (isi `$id`):
+
 ```php
 $model->saveData(['nama' => 'Budi Santoso'], $id);
 ```

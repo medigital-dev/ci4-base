@@ -1,6 +1,6 @@
 <?php
 
-namespace Said\Ci4Base\Libraries;
+namespace MedigitalDev\Ci4Base\Libraries;
 
 use CodeIgniter\HTTP\Files\UploadedFile;
 

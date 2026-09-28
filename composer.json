@@ -1,15 +1,15 @@
 {
-    "name": "medigital-dev/ci4-base",
-    "description": "Base model dan util reusable untuk project CodeIgniter 4 (UUID PK, soft delete, mini-DSL, bulk sync)",
-    "type": "library",
-    "license": "MIT",
-    "require": {
-        "php": "^8.1",
-        "codeigniter4/framework": "^4.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "Medigital-dev\\Ci4Base\\": "src/"
-        }
+  "name": "medigital-dev/ci4-base",
+  "description": "Base model dan util reusable untuk project CodeIgniter 4 (UUID PK, soft delete, mini-DSL, bulk sync)",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.1",
+    "codeigniter4/framework": "^4.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "MedigitalDev\\Ci4Base\\": "src/"
     }
+  }
 }
