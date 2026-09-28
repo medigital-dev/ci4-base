@@ -1,6 +1,6 @@
 <?php
 
-namespace MedigitalDev\Ci4Base\Model;
+namespace MedigitalDev\Ci4Base\Models;
 
 use CodeIgniter\Model;
 use Override;
