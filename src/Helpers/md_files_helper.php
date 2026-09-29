@@ -1,7 +1,13 @@
 <?php
 
+use CodeIgniter\HTTP\Files\UploadedFile;
 use MedigitalDev\Ci4Base\Dto\UploadOptions;
 use MedigitalDev\Ci4Base\Exceptions\FileUploadException;
+use MedigitalDev\Ci4Base\Libraries\Files;
+
+if (!defined('TEMP_UPLOAD_SUBFOLDER')) {
+    define('TEMP_UPLOAD_SUBFOLDER', 'temporaries');
+}
 
 if (!function_exists('md_tempUpload')) {
     /**
@@ -26,7 +32,7 @@ if (!function_exists('md_tempUpload')) {
         // supaya tidak membebani I/O di setiap request upload. Untuk kepastian pembersihan,
         // sebaiknya tetap tambahkan CI4 Command + cron job terpisah sebagai jaring pengaman.
         if (random_int(1, 100) <= 2) {
-            cleanFiles($tempFullPath);
+            md_cleanFiles($tempFullPath);
         }
 
         $options = new UploadOptions(
