@@ -1,2 +1,19 @@
+# Dependency
 /vendor/
 composer.lock
+ 
+# PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
+ 
+# IDE
+.idea/
+.vscode/
+*.iml
+ 
+# OS
+.DS_Store
+Thumbs.db
+ 
+# Env / config lokal (kalau nanti ada file config contoh)
+.env
