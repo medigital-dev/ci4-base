@@ -5,7 +5,7 @@ namespace MedigitalDev\Ci4Base\Libraries;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use MedigitalDev\Ci4Base\Dto\UploadOptions;
 
-class Files
+class BaseUploadLibrary
 {
     /**
      * Library unggah berkas — generik & reusable untuk kebutuhan upload di seluruh aplikasi.

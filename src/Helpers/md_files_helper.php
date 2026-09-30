@@ -3,7 +3,7 @@
 use CodeIgniter\HTTP\Files\UploadedFile;
 use MedigitalDev\Ci4Base\Dto\UploadOptions;
 use MedigitalDev\Ci4Base\Exceptions\FileUploadException;
-use MedigitalDev\Ci4Base\Libraries\Files;
+use MedigitalDev\Ci4Base\Libraries\BaseUploadLibrary;
 
 if (!defined('TEMP_UPLOAD_SUBFOLDER')) {
     define('TEMP_UPLOAD_SUBFOLDER', 'temporaries');
@@ -40,7 +40,7 @@ if (!function_exists('md_tempUpload')) {
             maxSize: $maxSize,
         );
 
-        $result = (new Files())->doUpload($file, TEMP_UPLOAD_SUBFOLDER, $options);
+        $result = (new BaseUploadLibrary())->doUpload($file, TEMP_UPLOAD_SUBFOLDER, $options);
 
         if (!$result['status']) {
             log_message('error', 'tempUpload gagal: ' . $result['error']);
