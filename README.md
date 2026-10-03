@@ -2,6 +2,10 @@
 
 Library tambahan untuk project [CodeIgniter 4](https://codeigniter.com/).
 
+## Attention
+
+Libary ini saya buat untuk mempermudah saya dalam membangun aplikasi menggunakan CodeIgniter 4, jika bermanfaat silahkan gunakan, dan mari kita kembangkan bersama.
+
 ## Instalasi
 
 Pastikan project menggunakan PHP 8.1+ dan CodeIgniter 4.4+, lalu jalankan dari direktori project:
