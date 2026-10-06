@@ -87,34 +87,6 @@ class BaseApiController extends BaseController
     }
 
     /**
-     * Guard permission. Return array respons kalau tidak diizinkan, null kalau lolos.
-     */
-    protected function cant(string $permission, string $message = 'Anda tidak diizinkan untuk melakukan aksi ini!', array $errors = []): ?array
-    {
-        $user = auth()->user();
-
-        if ($user === null || !$user->can($permission)) {
-            return $this->errorPayload($message, $errors);
-        }
-
-        return null;
-    }
-
-    /**
-     * Guard group. Return array respons kalau tidak masuk group, null kalau lolos.
-     */
-    protected function notIn(string $group, string $message = 'Anda tidak diizinkan untuk melakukan aksi ini!', array $errors = []): ?array
-    {
-        $user = auth()->user();
-
-        if ($user === null || !$user->inGroup($group)) {
-            return $this->errorPayload($message, $errors);
-        }
-
-        return null;
-    }
-
-    /**
      * Guard validasi. Return array respons kalau invalid, null kalau lolos.
      */
     protected function notValid(array $rules, string $message = 'Validasi Error!'): ?array
