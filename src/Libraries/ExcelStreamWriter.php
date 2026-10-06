@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Libraries;
+namespace MedigitalDev\Ci4Base\Libraries;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Color;

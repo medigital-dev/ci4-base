@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers;
+namespace MedigitalDev\Ci4Base\Controllers;
 
+use App\Controllers\BaseController;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;

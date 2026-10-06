@@ -1,6 +1,6 @@
 <?php
 
-namespace Config;
+namespace MedigitalDev\Ci4Base\Config;
 
 use CodeIgniter\Config\BaseConfig;
 
