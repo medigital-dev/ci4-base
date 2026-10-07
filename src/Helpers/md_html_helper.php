@@ -195,28 +195,28 @@ if (! function_exists('link_tag')) {
     }
 }
 
-if (! function_exists('plugins')) {
+if (! function_exists('md_plugins')) {
     /**
      * Muat CSS & JS untuk satu atau beberapa plugin sekaligus,
      * berdasarkan peta yang didefinisikan di Config\Plugins.
      *
      * Secara default, output CSS otomatis "disuntikkan" ke section
      * `pluginsCss` dan output JS ke section `pluginsJs` — TIDAK peduli
-     * di mana plugins() ini dipanggil secara fisik di dalam view
+     * di mana md_plugins() ini dipanggil secara fisik di dalam view
      * (boleh di tengah section 'content' sekalipun). Layout tetap
      * merender lewat renderSection('pluginsCss') / renderSection('pluginsJs')
      * seperti biasa.
      *
      * Contoh pemakaian paling umum (cukup satu baris, taruh di mana saja):
-     *   <?= plugins('datatable') ?>
-     *   <?= plugins(['datatable', 'select2']) ?>
+     *   <?= md_plugins('datatable') ?>
+     *   <?= md_plugins(['datatable', 'select2']) ?>
      *
      * Kalau nama section Anda berbeda dari default:
-     *   <?= plugins('datatable', false, true, 'headCss', 'footJs') ?>
+     *   <?= md_plugins('datatable', false, true, 'headCss', 'footJs') ?>
      *
      * Kalau TIDAK ingin auto-inject ke section (mis. dipakai di luar
      * konteks layout/section, atau di partial view untuk AJAX):
-     *   <?= plugins('datatable', false, false) ?>   // hasilnya dikembalikan sebagai string biasa
+     *   <?= md_plugins('datatable', false, false) ?>   // hasilnya dikembalikan sebagai string biasa
      *
      * @param string|array $namaPlugins Nama plugin tunggal, atau array nama plugin.
      *  - 'bootstrap5'
@@ -239,7 +239,7 @@ if (! function_exists('plugins')) {
      * @param string       $cssSection  Nama section tujuan untuk CSS.
      * @param string       $jsSection   Nama section tujuan untuk JS.
      */
-    function plugins(
+    function md_plugins(
         $namaPlugins,
         bool $indexPage = false,
         bool $autoSection = true,
@@ -263,7 +263,7 @@ if (! function_exists('plugins')) {
             }
 
             if (! isset($config->plugins[$nama])) {
-                log_message('warning', 'plugins(): plugin "{nama}" tidak terdaftar di Config\Plugins.', ['nama' => $nama]);
+                log_message('warning', 'md_plugins(): plugin "{nama}" tidak terdaftar di Config\Plugins.', ['nama' => $nama]);
                 continue;
             }
 
