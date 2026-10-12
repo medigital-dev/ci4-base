@@ -3,7 +3,7 @@
 if (! function_exists('_build_asset_url')) {
     /**
      * Helper internal: bangun URL final untuk src/href.
-     * Dipakai bersama oleh script_tag() dan link_tag() agar logikanya
+     * Dipakai bersama oleh md_script_tag() dan md_link_tag() agar logikanya
      * tidak diduplikasi di dua tempat berbeda (sumber bug #5).
      */
     function _build_asset_url(string $value, bool $indexPage): string
@@ -36,7 +36,7 @@ if (! function_exists('_normalize_asset_url')) {
     }
 }
 
-if (! function_exists('script_tag')) {
+if (! function_exists('md_script_tag')) {
     /**
      * Script
      *
@@ -45,7 +45,7 @@ if (! function_exists('script_tag')) {
      * @param string|array $src       Single script source, or array of sources/attributes
      * @param bool         $indexPage Should `Config\App::$indexPage` be added to the JS path
      */
-    function script_tag($src = '', bool $indexPage = false): string
+    function md_script_tag($src = '', bool $indexPage = false): string
     {
         static $loadedScripts = []; // menyimpan daftar src yang sudah pernah dipanggil
 
@@ -53,7 +53,7 @@ if (! function_exists('script_tag')) {
         if (is_array($src) && array_is_list($src)) {
             $output = '';
             foreach ($src as $s) {
-                $output .= script_tag($s, $indexPage);
+                $output .= md_script_tag($s, $indexPage);
             }
             return $output;
         }
@@ -116,7 +116,7 @@ if (! function_exists('script_tag')) {
     }
 }
 
-if (! function_exists('link_tag')) {
+if (! function_exists('md_link_tag')) {
     /**
      * Link
      *
@@ -124,7 +124,7 @@ if (! function_exists('link_tag')) {
      *
      * @param string|array $href Stylesheet href or array of multiple hrefs/attributes
      */
-    function link_tag(
+    function md_link_tag(
         $href = '',
         string $rel = 'stylesheet',
         string $type = 'text/css',
@@ -139,7 +139,7 @@ if (! function_exists('link_tag')) {
         if (is_array($href) && array_is_list($href)) {
             $output = '';
             foreach ($href as $h) {
-                $output .= link_tag($h, $rel, $type, $title, $media, $indexPage, $hreflang);
+                $output .= md_link_tag($h, $rel, $type, $title, $media, $indexPage, $hreflang);
             }
             return $output;
         }
@@ -231,7 +231,7 @@ if (! function_exists('md_plugins')) {
      *  - 'popper'
      *  - 'select2'
      *  - 'apexcharts'
-     * @param bool         $indexPage   Diteruskan ke script_tag()/link_tag().
+     * @param bool         $indexPage   Diteruskan ke md_script_tag()/md_link_tag().
      * @param bool         $autoSection Jika true (default), CSS/JS otomatis disuntik
      *                                  ke section di bawah ini dan fungsi return ''.
      *                                  Jika false, fungsi return string HTML gabungan
@@ -270,11 +270,11 @@ if (! function_exists('md_plugins')) {
             $plugin = $config->plugins[$nama];
 
             if (! empty($plugin['css'])) {
-                $cssOutput .= link_tag($plugin['css'], 'stylesheet', 'text/css', '', '', $indexPage);
+                $cssOutput .= md_link_tag($plugin['css'], 'stylesheet', 'text/css', '', '', $indexPage);
             }
 
             if (! empty($plugin['js'])) {
-                $jsOutput .= script_tag($plugin['js'], $indexPage);
+                $jsOutput .= md_script_tag($plugin['js'], $indexPage);
             }
         }
 
