@@ -159,4 +159,51 @@ class BaseApiController extends BaseController
     {
         return $this->respond($payload, $code);
     }
+
+    /**
+     * Peta nama method controller => aksi permission.
+     * Hasil akhirnya "{permissionPrefix}.{aksi}", mis. show => user.read.
+     * Override di controller turunan kalau ada method khusus.
+     *
+     * @var array<string,string>
+     */
+    protected array $permissionMap = [
+        'page'   => 'access',   // halaman user      => user.access
+        'index'  => 'read',     // daftar data       => user.read
+        'show'   => 'read',     // detail            => user.read
+        'create' => 'create',   // tambah            => user.create
+        'update' => 'update',   // ubah              => user.update
+        'delete' => 'delete',   // hapus             => user.delete
+    ];
+
+    protected function permission(string $method): string
+    {
+        // Method yang tidak ada di peta dipakai apa adanya: guard('export') => user.export
+        return $this->permissionPrefix . '.' . ($this->permissionMap[$method] ?? $method);
+    }
+
+    /**
+     * Guard permission Shield. Null kalau lolos, ResponseInterface kalau ditolak.
+     * contoh: if ($deny = $this->guard('show')) return $deny;
+     */
+    protected function guard(string $method): ?ResponseInterface
+    {
+        if ($this->permissionPrefix === '') {
+            throw new RuntimeException('permissionPrefix belum di-set untuk ' . static::class);
+        }
+
+        $user = auth()->user();
+
+        if ($user === null) {
+            return $this->respondError('Tidak terautentikasi.', [], 401);
+        }
+
+        $permission = $this->permission($method);
+
+        if (! $user->can($permission)) {
+            return $this->respondError('Anda tidak memiliki akses.', ['permission' => $permission], 403);
+        }
+
+        return null;
+    }
 }
