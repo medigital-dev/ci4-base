@@ -227,6 +227,49 @@ abstract class BaseModel extends Model
         return ['success' => true, 'status' => 'inserted', 'data' => $data];
     }
 
+    #[Override]
+    public function save($row): bool
+    {
+        if ($this->uniqueKey !== null && (is_array($row) || is_object($row))) {
+            if (is_array($row)) {
+                $data = $row;
+            } elseif (is_callable([$row, 'toRawArray'])) {
+                $data = $row->toRawArray();
+            } else {
+                $data = get_object_vars($row);
+
+                if (!array_key_exists($this->uniqueKey, $data)) {
+                    $data[$this->uniqueKey] = $row->{$this->uniqueKey} ?? null;
+                }
+                if (!array_key_exists($this->primaryKey, $data)) {
+                    $data[$this->primaryKey] = $row->{$this->primaryKey} ?? null;
+                }
+            }
+
+            if ($this->isBlankMatchValue($data[$this->uniqueKey] ?? null)) {
+                $uniqueKey = null;
+                $primaryKey = $data[$this->primaryKey] ?? null;
+
+                if (!$this->isBlankMatchValue($primaryKey)) {
+                    $existing = $this->asArray()->withDeleted()->find($primaryKey);
+                    $uniqueKey = $existing[$this->uniqueKey] ?? null;
+                }
+
+                if ($this->isBlankMatchValue($uniqueKey)) {
+                    $uniqueKey = $this->generateUniqueKey($this->uniqueKey);
+                }
+
+                if (is_array($row)) {
+                    $row[$this->uniqueKey] = $uniqueKey;
+                } else {
+                    $row->{$this->uniqueKey} = $uniqueKey;
+                }
+            }
+        }
+
+        return parent::save($row);
+    }
+
     private function upsertFailure(array|string $message, array $data): array
     {
         return ['success' => false, 'status' => 'failed', 'message' => $message, 'data' => $data];
