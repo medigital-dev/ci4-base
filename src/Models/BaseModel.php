@@ -38,6 +38,35 @@ abstract class BaseModel extends Model
     protected bool $restoreSoftDeleted = false;
 
     /**
+     * Pelacak untuk getInsertedUniqueId(): uniqueKey dari penulisan terakhir lewat
+     * save()/upsert() (null jika penulisan itu update), dan nilai insertID saat itu.
+     */
+    private ?string $trackedUniqueKey = null;
+    private ?string $trackedInsertId  = null;
+
+    /**
+     * Pastikan $uniqueKey ikut di $allowedFields. Tanpa ini, proteksi field CI4 membuang kolom
+     * tersebut diam-diam saat insert()/update() (dipakai save() dan upsert()), sehingga UUID yang
+     * dibuat tidak pernah tersimpan. bulkSaveData() sudah menambahkannya sendiri.
+     *
+     * Hanya ditambahkan jika $allowedFields sudah berisi (agar pengecekan "kosong" di
+     * bulkSaveData() tetap berfungsi). Jika model turunan punya initialize() sendiri,
+     * panggil parent::initialize() di dalamnya.
+     */
+    protected function initialize(): void
+    {
+        parent::initialize();
+
+        if (
+            $this->uniqueKey !== null
+            && $this->allowedFields !== []
+            && !in_array($this->uniqueKey, $this->allowedFields, true)
+        ) {
+            $this->allowedFields[] = $this->uniqueKey;
+        }
+    }
+
+    /**
      * Flexible where builder by string pattern.
      *
      * Format field:
@@ -143,6 +172,12 @@ abstract class BaseModel extends Model
         }
 
         if ($result['success']) {
+            if ($this->uniqueKey !== null) {
+                $this->trackInsertedUniqueKey(
+                    $result['status'] === 'inserted' ? ($result['data'][$this->uniqueKey] ?? null) : null
+                );
+            }
+
             $this->cleanRelatedCache();
         }
 
@@ -227,9 +262,17 @@ abstract class BaseModel extends Model
         return ['success' => true, 'status' => 'inserted', 'data' => $data];
     }
 
+    /**
+     * Override save() bawaan CI4:
+     *  - Jika model punya $uniqueKey dan nilainya kosong, isi otomatis dengan UUID baru
+     *    (atau pertahankan nilai milik record existing saat update).
+     *  - Setelah sukses, bersihkan cache terkait (lihat cleanRelatedCache()), sama seperti upsert().
+     */
     #[Override]
     public function save($row): bool
     {
+        $insertIdBefore = $this->insertID;
+
         if ($this->uniqueKey !== null && (is_array($row) || is_object($row))) {
             if (is_array($row)) {
                 $data = $row;
@@ -267,7 +310,27 @@ abstract class BaseModel extends Model
             }
         }
 
-        return parent::save($row);
+        $result = parent::save($row);
+
+        if ($result) {
+            if ($this->uniqueKey !== null && (is_array($row) || is_object($row))) {
+                // insertID hanya berubah kalau CI4 benar-benar melakukan insert pada panggilan ini
+                $inserted = $this->insertID !== $insertIdBefore;
+                $key      = is_array($row) ? ($row[$this->uniqueKey] ?? null) : ($row->{$this->uniqueKey} ?? null);
+
+                $this->trackInsertedUniqueKey($inserted ? $key : null);
+            }
+
+            $this->cleanRelatedCache();
+        }
+
+        return $result;
+    }
+
+    private function trackInsertedUniqueKey(mixed $key): void
+    {
+        $this->trackedUniqueKey = $this->isBlankMatchValue($key) ? null : (string) $key;
+        $this->trackedInsertId  = (string) $this->insertID;
     }
 
     private function upsertFailure(array|string $message, array $data): array
@@ -1120,12 +1183,26 @@ abstract class BaseModel extends Model
         return parent::countAllResults($reset, $test);
     }
 
+    /**
+     * uniqueKey dari record yang BARU di-insert oleh save()/upsert()/saveData()/insertData() terakhir.
+     * Mengembalikan null jika penulisan terakhir adalah update (bukan insert) atau model tanpa $uniqueKey.
+     *
+     * CI4 hanya mengisi insertID saat insert dan tidak menggantinya saat update, jadi mencari
+     * lewat getInsertID() saja bisa mengembalikan UUID record lain. Karena itu hasil penulisan
+     * terakhir dilacak sendiri; pencarian lewat insertID hanya dipakai kalau ada insert lain
+     * (mis. insert() langsung) sejak penulisan yang dilacak.
+     */
     public function getInsertedUniqueId(): ?string
     {
-        if (!is_null($this->uniqueKey)) {
-            return $this->findBy($this->primaryKey, (string) $this->getInsertID(), $this->uniqueKey);
+        if ($this->uniqueKey === null) {
+            return null;
         }
-        return null;
+
+        if ($this->trackedInsertId !== null && (string) $this->insertID === $this->trackedInsertId) {
+            return $this->trackedUniqueKey;
+        }
+
+        return $this->findBy($this->primaryKey, (string) $this->getInsertID(), $this->uniqueKey);
     }
 
     /**
